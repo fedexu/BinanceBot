@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+telegram:
+  messages:
+    welcome: Salve! Ti ho registrato al bot, d'ora in poi quando ho da segnalarti qualcosa ti scrivero
+    exit: Sei stato correttamente rimosso dal Bot! Ciao!
+  commands:
+    start: /start
+    stop: /stop

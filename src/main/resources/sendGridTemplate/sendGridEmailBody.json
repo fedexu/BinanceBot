@@ -1,0 +1,21 @@
+{
+  "personalizations": [
+    {
+      "to": [
+        {
+          "email": "federico.xu125@gmail.com"
+        }
+      ],
+      "subject": "Test da file"
+    }
+  ],
+  "from": {
+    "email": "fede-xu125@live.it"
+  },
+  "content": [
+    {
+      "type": "text/plain",
+      "value": "Test Test AAA"
+    }
+  ]
+}
