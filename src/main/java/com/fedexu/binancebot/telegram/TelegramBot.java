@@ -4,7 +4,11 @@ import it.flp.telegram.bot.Bot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +17,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.fedexu.binancebot.configuration.exception.LambdaExceptionWrappers.throwingConsumerWrapper;
 import static java.util.Objects.isNull;
 
-public class TelegramBot implements DisposableBean, Runnable {
+@Component
+public class TelegramBot {
+
+    @Autowired
+    private Bot telegramBot;
 
     @Value("${telegram.messages.welcome}")
     private String WELCOME_MESSAGE;
@@ -27,25 +35,18 @@ public class TelegramBot implements DisposableBean, Runnable {
     @Value("${telegram.commands.stop}")
     private String STOP_COMMAND;
 
-
     Logger logger = LoggerFactory.getLogger(TelegramBot.class);
 
-    private Bot telegramBot;
     List<Long> registeredUserToBot = new ArrayList<>();
     AtomicReference<Long> lastUpdateId = new AtomicReference<>(0L);
 
-    private Thread thread;
     private volatile boolean exitCondition;
 
-    public TelegramBot(String BotKey) {
-        telegramBot = new Bot(BotKey);
-        logger.info("TelegramBot Configured!");
-        this.thread = new Thread(this);
-        this.thread.start();
-    }
-
-    @Override
+    //    Dead man's solution
+    @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void run() {
+        logger.info("TelegramBot STARTED!");
+        logger.info(this.toString());
         try {
             while (!exitCondition) {
                 telegramBot.getUpdater().getUpdatesWithOffset(lastUpdateId.get())
@@ -80,12 +81,7 @@ public class TelegramBot implements DisposableBean, Runnable {
         }
     }
 
-    @Override
-    public void destroy() {
-        exitCondition = true;
-    }
-
-    public void sendMessageToSubscribed(String message){
+    public void sendMessageToSubscribed(String message) {
         registeredUserToBot.forEach(throwingConsumerWrapper(user -> telegramBot.getSender().sendMessage(message, user)));
 
     }

@@ -8,3 +8,9 @@ telegram:
   commands:
     start: /start
     stop: /stop
+
+binance:
+  cache:
+    max: 300
+  interval: ONE_MINUTE #FIFTEEN_MINUTES
+  coin: ETHBUSD
