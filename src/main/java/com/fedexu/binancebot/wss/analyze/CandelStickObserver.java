@@ -5,9 +5,11 @@ import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.domain.event.CandlestickEvent;
 import com.binance.api.client.domain.market.Candlestick;
 import com.binance.api.client.domain.market.CandlestickInterval;
+import com.binance.api.client.domain.market.TickerPrice;
 import com.fedexu.binancebot.event.MarketStatus;
-import com.fedexu.binancebot.event.OrderStatus;
-import com.fedexu.binancebot.event.OrderStatusEvent;
+import com.fedexu.binancebot.event.order.OrderStatus;
+import com.fedexu.binancebot.event.order.OrderStatusDto;
+import com.fedexu.binancebot.event.order.OrderStatusEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
     Logger logger = LoggerFactory.getLogger(CandelStickObserver.class);
     private ApplicationEventPublisher publisher;
 
+    private MarketStatus marketStatus = null;
+    private OrderStatus orderStatus = null;
+
     @Autowired
     BinanceApiRestClient restClient;
 
@@ -42,6 +47,10 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
     @Value("${binance.cache.max}")
     int MAX_CACHE_HISTORY_VALUE;
 
+    @Value("${binance.pad%}")
+    double safePadPerc;
+
+    @SuppressWarnings("NullableProblems")
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.publisher = applicationEventPublisher;
@@ -58,7 +67,7 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
             try {
                 candelDataFetch(candelsHistory, candlestickEvent);
                 analyzeEMA(candelsHistory);
-
+                publishEevent(tradeSymbol);
             } catch (Exception e) {
                 logger.error("error : ", e);
             }
@@ -70,44 +79,51 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
         Double ema7;
         Double ema25;
         Double ema99;
+        marketStatus = null;
+        orderStatus = null;
 
         out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> Double.parseDouble(value.getClose())).toArray(), EMA_7.getValueId());
-        ema7 = (out.length - EMA_7.getValueId() >= 0) ? out[out.length - EMA_7.getValueId()] : null;
+        ema7 = (out.length - 1 >= 0) ? out[out.length - 1] : null;
         out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> Double.parseDouble(value.getClose())).toArray(), EMA_25.getValueId());
-        ema25 = (out.length - EMA_25.getValueId() >= 0) ? out[out.length - EMA_25.getValueId()] : null;
+        ema25 = (out.length - 1 >= 0) ? out[out.length - 1] : null;
         out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> Double.parseDouble(value.getClose())).toArray(), EMA_99.getValueId());
-        ema99 = (out.length - EMA_99.getValueId() >= 0) ? out[out.length - EMA_99.getValueId()] : null;
+        ema99 = (out.length - 1 >= 0) ? out[out.length - 1] : null;
 
-        logger.info("EMA(" + EMA_7 + "): " + ema7);
-        logger.info("EMA(" + EMA_25 + "): " + ema25);
-        logger.info("EMA(" + EMA_99 + "): " + ema99);
+        logger.info(" EMA(" + EMA_7 + "): " + ema7 + " EMA(" + EMA_25 + "): " + ema25 + " EMA(" + EMA_99 + "): " + ema99);
 
         if (!isNull(ema7) && !isNull(ema25) && !isNull(ema99)) {
             // pad %
-            double safePad = ema25 * 0.02;
+            double safePad = ema25 * safePadPerc;
 
             if (ema7 < ema99 && ema25 < ema99) {
                 if (ema7 < ema25 - safePad) {
-                    publisher.publishEvent(new OrderStatusEvent(this, System.currentTimeMillis(), MarketStatus.LOWERING_SELL, OrderStatus.SELL));
+                    marketStatus = MarketStatus.LOWERING_SELL;
+                    orderStatus = OrderStatus.SELL;
                 } else if (ema7 > ema25 + safePad) {
-                    publisher.publishEvent(new OrderStatusEvent(this, System.currentTimeMillis(), MarketStatus.LOWERING_TRADING, OrderStatus.BUY));
-                } else {
-                    logger.info("waiting for market to adjust");
+                    marketStatus = MarketStatus.LOWERING_TRADING;
+                    orderStatus = OrderStatus.BUY;
                 }
+//                    waiting for market to adjust
+//                    logger.info("waiting for market to adjust");
+
             } else if (ema7 > ema99 && ema25 > ema99) {
                 if (ema7 < ema25 - safePad) {
-                    publisher.publishEvent(new OrderStatusEvent(this, System.currentTimeMillis(), MarketStatus.RAISING_TRADING, OrderStatus.SELL));
+                    marketStatus = MarketStatus.RAISING_TRADING;
+                    orderStatus = OrderStatus.SELL;
                 } else if (ema7 > ema25 + safePad) {
-                    publisher.publishEvent(new OrderStatusEvent(this, System.currentTimeMillis(), MarketStatus.RAISING_HOLD, OrderStatus.BUY));
-                } else {
-                    logger.info("waiting for market to adjust");
+                    marketStatus = MarketStatus.RAISING_HOLD;
+                    orderStatus = OrderStatus.BUY;
                 }
+//                    waiting for market to adjust
+//                    logger.info("waiting for market to adjust");
+
             } else {
                 logger.info("Inconsinstent STATE");
                 logger.info("EMA(" + EMA_7 + "): " + ema7);
                 logger.info("EMA(" + EMA_25 + "): " + ema25);
                 logger.info("EMA(" + EMA_99 + "): " + ema99);
             }
+
         }
 
     }
@@ -129,6 +145,16 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
             candelsHistory.stream()
                     .filter(candelValue -> candelValue.getOpenTime().equals(candlestickEvent.getOpenTime()))
                     .findFirst().get().setClose(candlestickEvent.getClose());
+        }
+    }
+
+
+    private void publishEevent(String tradeSymbol) {
+        if (!isNull(marketStatus) && !isNull(orderStatus)) {
+            TickerPrice tickerPrice = restClient.getPrice(tradeSymbol);
+            publisher.publishEvent(new OrderStatusEvent(this, System.currentTimeMillis(),
+                    OrderStatusDto.builder().marketStatus(marketStatus).orderStatus(orderStatus)
+                            .priceExcanged(Double.parseDouble(tickerPrice.getPrice())).build()));
         }
     }
 

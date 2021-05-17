@@ -27,7 +27,7 @@ public class BinanceBotMainThread {
     @Value("${binance.coin}")
     String COIN;
 
-    //    Dead man's solution
+    //Dead man's solution
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void run() {
         logger.info("BinanceWebSocketReader STARTED!");

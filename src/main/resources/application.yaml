@@ -13,5 +13,10 @@ telegram:
 binance:
   cache:
     max: 300
-  interval: FIFTEEN_MINUTES
+  pad%: 0.01
+  interval: ONE_MINUTE #FIFTEEN_MINUTES #HOURLY
   coin: ETHBUSD
+
+firestore:
+  collection:
+    telegramuser: telegramUser

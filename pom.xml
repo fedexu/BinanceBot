@@ -10,12 +10,13 @@
 	</parent>
 	<groupId>com.fedexu</groupId>
 	<artifactId>BinanceBot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>BinanceBot</name>
 	<description>BinanceBot for automatic buy/sell</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -68,7 +69,11 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/src/main/resources/lib/TelegramBot-0.0.1.jar</systemPath>
 		</dependency>
-
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>7.3.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

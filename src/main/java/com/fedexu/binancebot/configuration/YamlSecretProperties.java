@@ -16,6 +16,7 @@ public class YamlSecretProperties {
     private String BINANCE_SECRET_KEY;
     private String SENDGRID_API_KEY;
     private String TELEGRAM_BOT_KEY;
-
+    private String FIREBASE_TOKEN;
+    private String FIREBASE_PROJECT_ID;
 
 }
