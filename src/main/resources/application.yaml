@@ -5,6 +5,7 @@ telegram:
   messages:
     welcome: Salve! Ti ho registrato al bot, d'ora in poi quando ho da segnalarti qualcosa ti scrivero
     exit: Sei stato correttamente rimosso dal Bot! Ciao!
+    configuration: Ad ora sono configurato per rispondere ai comandi /start e /stop .
   commands:
     start: /start
     stop: /stop
@@ -12,5 +13,5 @@ telegram:
 binance:
   cache:
     max: 300
-  interval: ONE_MINUTE #FIFTEEN_MINUTES
+  interval: FIFTEEN_MINUTES
   coin: ETHBUSD

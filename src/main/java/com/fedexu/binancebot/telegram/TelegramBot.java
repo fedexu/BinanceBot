@@ -3,12 +3,10 @@ package com.fedexu.binancebot.telegram;
 import it.flp.telegram.bot.Bot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +33,9 @@ public class TelegramBot {
     @Value("${telegram.commands.stop}")
     private String STOP_COMMAND;
 
+    @Value("${telegram.messages.configuration}")
+    private String CONFIGURATION_MESSAGE;
+
     Logger logger = LoggerFactory.getLogger(TelegramBot.class);
 
     List<Long> registeredUserToBot = new ArrayList<>();
@@ -57,11 +58,11 @@ public class TelegramBot {
                         if (STOP_COMMAND.equals(updateMessage.getMessage().getText())) {
                             registeredUserToBot.remove(updateMessage.getMessage().getSender().getId());
                             telegramBot.getSender().sendMessage(EXIT_MESSAGE, updateMessage.getMessage().getSender().getId());
-                        }
-
-                        if (START_COMMAND.equals(updateMessage.getMessage().getText())) {
+                        } else if (START_COMMAND.equals(updateMessage.getMessage().getText())) {
                             registeredUserToBot.add(updateMessage.getMessage().getSender().getId());
                             telegramBot.getSender().sendMessage(WELCOME_MESSAGE, updateMessage.getMessage().getSender().getId());
+                        } else {
+                            telegramBot.getSender().sendMessage(CONFIGURATION_MESSAGE, updateMessage.getMessage().getSender().getId());
                         }
 
                     }

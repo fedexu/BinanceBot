@@ -1,4 +1,4 @@
-package com.fedexu.binancebot.wss;
+package com.fedexu.binancebot.wss.analyze;
 
 import com.tictactec.ta.lib.Core;
 import com.tictactec.ta.lib.MAType;

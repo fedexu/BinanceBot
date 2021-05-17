@@ -1,4 +1,4 @@
-package com.fedexu.binancebot.wss;
+package com.fedexu.binancebot.wss.analyze;
 
 import com.binance.api.client.domain.market.CandlestickInterval;
 import lombok.Builder;
