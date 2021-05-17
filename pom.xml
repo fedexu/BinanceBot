@@ -59,15 +59,11 @@
 			<groupId>com.tictactec.ta.lib</groupId>
 			<artifactId>tictactec</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/lib/ta-lib-0.4.0.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>TelegramBot</groupId>
 			<artifactId>TelegramBot</artifactId>
 			<version>0.0.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/lib/TelegramBot-0.0.1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.google.firebase</groupId>
