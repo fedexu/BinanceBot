@@ -14,7 +14,7 @@ binance:
   cache:
     max: 300
   pad%: 0.01
-  interval: ONE_MINUTE #FIFTEEN_MINUTES #HOURLY
+  interval: HALF_HOURLY #ONE_MINUTE #FIFTEEN_MINUTES #HOURLY #
   coin: ETHBUSD
 
 firestore:

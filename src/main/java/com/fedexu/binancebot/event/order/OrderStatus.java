@@ -14,4 +14,13 @@ public enum OrderStatus {
     public String getValueId() {
         return this.valueId;
     }
+
+    public static OrderStatus fromString(String value) {
+        for (OrderStatus status : OrderStatus.values()) {
+            if (status.valueId.equalsIgnoreCase(value)) {
+                return status;
+            }
+        }
+        return null;
+    }
 }

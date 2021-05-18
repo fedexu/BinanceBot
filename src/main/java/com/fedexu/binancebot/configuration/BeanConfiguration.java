@@ -3,7 +3,6 @@ package com.fedexu.binancebot.configuration;
 import com.binance.api.client.BinanceApiClientFactory;
 import com.binance.api.client.BinanceApiRestClient;
 import com.binance.api.client.BinanceApiWebSocketClient;
-import com.fedexu.binancebot.email.SendGridHelper;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
@@ -11,20 +10,13 @@ import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.common.collect.Lists;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.cloud.FirestoreClient;
-import it.flp.telegram.bot.Bot;
+import com.pengrad.telegrambot.TelegramBot;
+import com.sendgrid.SendGrid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.util.Date;
-import java.util.Objects;
 
 @Component
 @AutoConfigureAfter(value = YamlSecretProperties.class)
@@ -41,13 +33,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public SendGridHelper sendGridHelper() {
-        return new SendGridHelper(yamlSecretProperties.getSENDGRID_API_KEY());
+    public SendGrid SendGrid() {
+        return new SendGrid(yamlSecretProperties.getSENDGRID_API_KEY());
     }
 
     @Bean
-    public Bot bot() {
-        return new Bot(yamlSecretProperties.getTELEGRAM_BOT_KEY());
+    public TelegramBot telegramBot() {
+        return new TelegramBot(yamlSecretProperties.getTELEGRAM_BOT_KEY());
     }
 
     @Bean

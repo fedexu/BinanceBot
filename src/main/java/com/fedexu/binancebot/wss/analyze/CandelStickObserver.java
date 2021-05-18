@@ -57,7 +57,6 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
     }
 
     public Closeable watchEMA(CandlestickInterval interval, String tradeSymbol) throws IOException {
-        logger.info(this.toString());
         CandelStickTimesFrame timesFrame = CandelStickTimesFrame.calculateCandlestickTimesFrame(interval, MAX_CACHE_HISTORY_VALUE);
 
         List<Candlestick> candelsHistory = restClient.getCandlestickBars(tradeSymbol, interval, 500, timesFrame.getStart(), timesFrame.getEnd());
@@ -89,7 +88,7 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
         out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> Double.parseDouble(value.getClose())).toArray(), EMA_99.getValueId());
         ema99 = (out.length - 1 >= 0) ? out[out.length - 1] : null;
 
-        logger.info(" EMA(" + EMA_7 + "): " + ema7 + " EMA(" + EMA_25 + "): " + ema25 + " EMA(" + EMA_99 + "): " + ema99);
+//        logger.info(" EMA(" + EMA_7 + "): " + ema7 + " EMA(" + EMA_25 + "): " + ema25 + " EMA(" + EMA_99 + "): " + ema99);
 
         if (!isNull(ema7) && !isNull(ema25) && !isNull(ema99)) {
             // pad %

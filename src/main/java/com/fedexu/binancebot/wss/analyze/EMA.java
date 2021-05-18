@@ -15,4 +15,14 @@ public enum EMA {
     public int getValueId() {
         return this.valueId;
     }
+
+    public static EMA fromInt(int number) {
+        for (EMA b : EMA.values()) {
+            if (b.valueId == number) {
+                return b;
+            }
+        }
+        return null;
+    }
+
 }

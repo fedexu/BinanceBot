@@ -13,14 +13,14 @@ import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class BinanceBotMainThread {
+public class BinanceBotMain {
 
-    Logger logger = LoggerFactory.getLogger(BinanceBotMainThread.class);
+    Logger logger = LoggerFactory.getLogger(BinanceBotMain.class);
     public volatile boolean exitCondition;
 
     @Autowired
     CandelStickObserver candelStickObserver;
-    
+
     @Value("${binance.interval}")
     String TIME_INTERVAL;
 
@@ -32,21 +32,17 @@ public class BinanceBotMainThread {
     public void run() {
         logger.info("BinanceWebSocketReader STARTED!");
         try {
-            Closeable webSocketConnection = candelStickObserver.watchEMA(CandlestickInterval.valueOf(TIME_INTERVAL), COIN );
-            while(!exitCondition){
+            Closeable webSocketConnection = candelStickObserver.watchEMA(CandlestickInterval.valueOf(TIME_INTERVAL), COIN);
+            while (!exitCondition) {
                 // if the last socket time is below 1m
-                if ( System.currentTimeMillis() - candelStickObserver.webSocketEventTime > 60 * 1000 ){
+                if (System.currentTimeMillis() - candelStickObserver.webSocketEventTime > 60 * 1000) {
                     webSocketConnection.close();
                     logger.info("Close the old connection. Start a new one!");
-                    candelStickObserver.watchEMA(CandlestickInterval.valueOf(TIME_INTERVAL), COIN );
+                    webSocketConnection = candelStickObserver.watchEMA(CandlestickInterval.valueOf(TIME_INTERVAL), COIN);
                     TimeUnit.SECONDS.sleep(30);
                 }
+                TimeUnit.SECONDS.sleep(15);
             }
-
-//            ClassLoader classLoader = getClass().getClassLoader();
-//            File file = new File(Objects.requireNonNull(classLoader.getResource("sendGridTemplate/sendGridEmailBody.json")).getFile());
-//            sendGridHelper.sendMail(new String(Files.readAllBytes(file.toPath())));
-//            logger.info("mail Sended");
         } catch (Exception e) {
             logger.error("exception occurs in WSS Thread : ", e);
         }

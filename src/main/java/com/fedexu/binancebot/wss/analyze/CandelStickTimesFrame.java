@@ -43,7 +43,7 @@ public class CandelStickTimesFrame {
         }
 
         return CandelStickTimesFrame.builder()
-                .start(System.currentTimeMillis() - ( timeToSubstract * PERIODS_AVERAGE) )
+                .start(System.currentTimeMillis() - (timeToSubstract * PERIODS_AVERAGE))
                 .end(System.currentTimeMillis())
                 .build();
     }
