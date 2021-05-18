@@ -1,20 +1,28 @@
 package com.fedexu.binancebot.telegram;
 
+import com.fedexu.binancebot.event.commands.TelegramCommandDto;
+import com.fedexu.binancebot.event.commands.TelegramCommandEvent;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.isNull;
+
 @Component
-public class TelegramBotMain {
+public class TelegramBotMain implements ApplicationEventPublisherAware {
 
     Logger logger = LoggerFactory.getLogger(TelegramBotMain.class);
+    private ApplicationEventPublisher publisher;
 
     @Autowired
     private TelegramBot telegramBot;
@@ -22,28 +30,26 @@ public class TelegramBotMain {
     @Autowired
     private TelegramHelper telegramHelper;
 
-    @Value("${telegram.messages.welcome}")
-    private String WELCOME_MESSAGE;
-
-    @Value("${telegram.messages.exit}")
-    private String EXIT_MESSAGE;
-
-    @Value("${telegram.commands.start}")
-    private String START_COMMAND;
-
-    @Value("${telegram.commands.stop}")
-    private String STOP_COMMAND;
-
     @Value("${telegram.messages.configuration}")
     private String CONFIGURATION_MESSAGE;
 
+    @Value("${build.version}")
+    private String buildVersion;
+
     public volatile boolean exitCondition;
     private boolean errorOnTelegramListener;
+
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.publisher = applicationEventPublisher;
+    }
 
     //Dead man's solution
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void run() {
         logger.info("TelegramBot started!");
+        updateVersionWelcome();
         try {
             processMessages();
             while (!exitCondition) {
@@ -69,18 +75,9 @@ public class TelegramBotMain {
                     logger.info("TelegramBot update : " + update.updateId());
                     long chatId = update.message().chat().id();
                     String text = update.message().text();
-
-                    if (STOP_COMMAND.equals(text)) {
-                        if (telegramHelper.isUserRegistered(chatId)) {
-                            telegramHelper.removeUser(chatId);
-                            telegramHelper.sendMessage(EXIT_MESSAGE, chatId);
-                        }
-                    } else if (START_COMMAND.equals(text)) {
-                        if (!telegramHelper.isUserRegistered(chatId)) {
-                            telegramHelper.addUser(
-                                    User.builder().username(update.message().chat().username()).chatId(chatId).build());
-                            telegramHelper.sendMessage(WELCOME_MESSAGE, chatId);
-                        }
+                    User user = User.builder().username(update.message().chat().username()).chatId(chatId).build();
+                    if (!isNull(text) && text.startsWith("/")){
+                        publishEevent(update.message().chat().id(), update.message().text(), user);
                     } else {
                         telegramHelper.sendMessage(CONFIGURATION_MESSAGE, chatId);
                     }
@@ -91,7 +88,26 @@ public class TelegramBotMain {
             });
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
+    }
 
+    private void publishEevent(long chatId, String text, User user) {
+        publisher.publishEvent(new TelegramCommandEvent(this,
+                TelegramCommandDto.builder().chatId(chatId).command(text).user(user).build()
+        ));
+
+    }
+
+    private void updateVersionWelcome() {
+        DefaultArtifactVersion version = new DefaultArtifactVersion(buildVersion);
+        String newVersion = "New version is up! " + buildVersion + " ! \n ";
+        telegramHelper.getAllUser().forEach((chatId, user) -> {
+            if (isNull(user.getVersion()) || user.getVersion().isEmpty() ||
+                    version.compareTo( new DefaultArtifactVersion(user.getVersion()) ) > 0 ){
+                telegramHelper.sendMessage(newVersion + CONFIGURATION_MESSAGE, chatId);
+                user.setVersion(buildVersion);
+                telegramHelper.save(user);
+            }
+        });
     }
 
 }

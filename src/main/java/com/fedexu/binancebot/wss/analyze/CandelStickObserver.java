@@ -66,7 +66,7 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
             try {
                 candelDataFetch(candelsHistory, candlestickEvent);
                 analyzeEMA(candelsHistory);
-                publishEevent(tradeSymbol);
+                publishOrderEevent(tradeSymbol);
             } catch (Exception e) {
                 logger.error("error : ", e);
             }
@@ -117,10 +117,10 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
 //                    logger.info("waiting for market to adjust");
 
             } else {
-                logger.info("Inconsinstent STATE");
-                logger.info("EMA(" + EMA_7 + "): " + ema7);
-                logger.info("EMA(" + EMA_25 + "): " + ema25);
-                logger.info("EMA(" + EMA_99 + "): " + ema99);
+//                logger.info("Inconsinstent STATE");
+//                logger.info("EMA(" + EMA_7 + "): " + ema7);
+//                logger.info("EMA(" + EMA_25 + "): " + ema25);
+//                logger.info("EMA(" + EMA_99 + "): " + ema99);
             }
 
         }
@@ -148,12 +148,11 @@ public class CandelStickObserver implements ApplicationEventPublisherAware {
     }
 
 
-    private void publishEevent(String tradeSymbol) {
+    private void publishOrderEevent(String tradeSymbol) {
         if (!isNull(marketStatus) && !isNull(orderStatus)) {
             TickerPrice tickerPrice = restClient.getPrice(tradeSymbol);
-            publisher.publishEvent(new OrderStatusEvent(this, System.currentTimeMillis(),
-                    OrderStatusDto.builder().marketStatus(marketStatus).orderStatus(orderStatus)
-                            .priceExcanged(Double.parseDouble(tickerPrice.getPrice())).build()));
+            publisher.publishEvent(new OrderStatusEvent(this, OrderStatusDto.builder().marketStatus(marketStatus).orderStatus(orderStatus)
+                    .priceExcanged(Double.parseDouble(tickerPrice.getPrice())).build()));
         }
     }
 

@@ -7,8 +7,8 @@ import lombok.Data;
 @Builder
 public class User {
 
-    private Long id;
     private Long chatId;
     private String username;
+    private String version;
 
 }

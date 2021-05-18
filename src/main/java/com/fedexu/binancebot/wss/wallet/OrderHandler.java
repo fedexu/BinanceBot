@@ -29,7 +29,7 @@ public class OrderHandler implements ApplicationListener<OrderStatusEvent> {
         if (orderStatusEvent.getOrderStatusDto().getMarketStatus() != marketStatus) {
             marketStatus = orderStatusEvent.getOrderStatusDto().getMarketStatus();
             String message = "";
-            String excangedPrice = " \n Actual Exchanged price is " + orderStatusEvent.getOrderStatusDto().getPriceExcanged() + " $ ";
+            String excangedPrice = "\n Actual Exchanged price is " + orderStatusEvent.getOrderStatusDto().getPriceExcanged() + " $ ";
             switch (marketStatus) {
                 case LOWERING_SELL:
                     message = "Decreasing market, DO NOT BUY AT ALL" + excangedPrice;

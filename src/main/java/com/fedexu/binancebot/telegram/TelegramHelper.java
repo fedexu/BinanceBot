@@ -44,22 +44,7 @@ public class TelegramHelper {
         telegramBot.execute(new SendMessage(chatId, message));
     }
 
-    public boolean isUserRegistered(long chatId) {
-        boolean find = false;
-        try {
-            DocumentReference docRef = firestore.collection(usersCollection).document(String.valueOf(chatId));
-            ApiFuture<DocumentSnapshot> future = docRef.get();
-            DocumentSnapshot document = future.get();
-            if (document.exists()) {
-                find = true;
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            logger.error("Error Firestore GET: " + e);
-        }
-        return find;
-    }
-
-    public User addUser(User user) {
+    public User save(User user) {
         User addedUser = null;
         try {
             //ADD new User to the list
@@ -76,7 +61,7 @@ public class TelegramHelper {
         return addedUser;
     }
 
-    public boolean removeUser(long chatId) {
+    public boolean remove(long chatId) {
         boolean removed = false;
         try {
             //Remove user to the list
@@ -91,7 +76,7 @@ public class TelegramHelper {
         return removed;
     }
 
-    private Map<Long, User> getAllUser() {
+    public Map<Long, User> getAllUser() {
         Map<Long, User> users = null;
         try {
             // asynchronously retrieve all users
@@ -102,15 +87,34 @@ public class TelegramHelper {
             users = documents.stream()
                     .collect(Collectors.toMap(
                             document -> document.getLong("chatId"),
-                            document -> User.builder()
-                                    .id(Long.valueOf(document.getId()))
-                                    .username(document.getString("username"))
-                                    .chatId(document.getLong("chatId"))
-                                    .build()
+                            this::mapToUser
                     ));
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error Firestore GET ALL: " + e);
         }
         return users;
+    }
+
+    public User find(long chatId){
+        User searchedUser = null;
+        try {
+            DocumentReference docRef = firestore.collection(usersCollection).document(String.valueOf(chatId));
+            ApiFuture<DocumentSnapshot> future = docRef.get();
+            DocumentSnapshot document = future.get();
+            if (document.exists()) {
+                searchedUser = mapToUser(document);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Error Firestore GET: " + e);
+        }
+        return searchedUser;
+    }
+
+    private User mapToUser(DocumentSnapshot document){
+        return User.builder()
+                .username(document.getString("username"))
+                .chatId(document.getLong("chatId"))
+                .version(document.getString("version"))
+                .build();
     }
 }

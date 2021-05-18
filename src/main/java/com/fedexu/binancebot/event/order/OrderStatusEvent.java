@@ -11,9 +11,9 @@ public class OrderStatusEvent extends ApplicationEvent {
     private long eventTime;
     private OrderStatusDto orderStatusDto;
 
-    public OrderStatusEvent(Object source, long eventTime, OrderStatusDto orderStatusDto) {
+    public OrderStatusEvent(Object source, OrderStatusDto orderStatusDto) {
         super(source);
-        this.eventTime = eventTime;
+        this.eventTime = System.currentTimeMillis();
         this.orderStatusDto = orderStatusDto;
     }
 

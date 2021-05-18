@@ -1,14 +1,32 @@
 server:
   port: 8080
+application:
+  name: @project.artifactId@
+build:
+  version: @project.version@
 
 telegram:
   messages:
-    welcome: Salve! Ti ho registrato al bot, d'ora in poi quando ho da segnalarti qualcosa ti scrivero
-    exit: Sei stato correttamente rimosso dal Bot! Ciao!
-    configuration: Ad ora sono configurato per rispondere ai comandi /start e /stop .
+    welcome: |
+      Salve!
+      Ti ho registrato al bot, d'ora in poi quando ho da segnalarti qualcosa ti scrivero.
+    exit: |
+      Sei stato correttamente rimosso dal Bot! Ciao!
+    configuration: |
+      I can help you create and manage Telegram bots. If you're new to the Bot API, please see the commands below.
+      You can control me by sending these commands:
+
+      /start - register you as user.
+      /stop - remove you from the list and be quiet!
+      /notify [symbol] [price] [up/down] - notify the crypto value based on price. e.g. /notify DOGEBUSD 1 up
+    notify: |
+      Ho registrato correttamente la tua richiesta!
+      La notifica vale solo per un alert.
+
   commands:
     start: /start
     stop: /stop
+    notify: /notify
 
 binance:
   cache:
@@ -19,4 +37,4 @@ binance:
 
 firestore:
   collection:
-    telegramuser: telegramUser
+    telegramuser: test
