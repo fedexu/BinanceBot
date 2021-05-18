@@ -1,5 +1,6 @@
 package com.fedexu.binancebot.wss.wallet;
 
+import com.fedexu.binancebot.configuration.YamlSecretProperties;
 import com.fedexu.binancebot.email.SendGridHelper;
 import com.fedexu.binancebot.event.MarketStatus;
 import com.fedexu.binancebot.event.order.OrderStatusEvent;
@@ -20,6 +21,9 @@ public class OrderHandler implements ApplicationListener<OrderStatusEvent> {
 
     @Autowired
     private TelegramHelper telegramHelper;
+
+    @Autowired
+    private YamlSecretProperties yamlSecretProperties;
 
     //Default in HOLD status to not do anything
     private MarketStatus marketStatus = MarketStatus.RAISING_HOLD;
@@ -46,6 +50,7 @@ public class OrderHandler implements ApplicationListener<OrderStatusEvent> {
             }
             logger.info("SENDING TELEGRAM MESSAGE : " + message);
             telegramHelper.sendMessageToSubscribed(message);
+            sendGridHelper.sendMail(yamlSecretProperties.getEMAIL(), "BinanceBot ALERT - Status changed", message);
 
         }
     }

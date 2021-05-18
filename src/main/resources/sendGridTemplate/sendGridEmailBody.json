@@ -3,10 +3,10 @@
     {
       "to": [
         {
-          "email": "federico.xu125@gmail.com"
+          "email": "<toEmail>"
         }
       ],
-      "subject": "Test da file"
+      "subject": "<subject>"
     }
   ],
   "from": {
@@ -15,7 +15,7 @@
   "content": [
     {
       "type": "text/plain",
-      "value": "Test Test AAABBB"
+      "value": "<body>"
     }
   ]
 }

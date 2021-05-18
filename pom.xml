@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.fedexu</groupId>
     <artifactId>BinanceBot</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <name>BinanceBot</name>
     <description>BinanceBot for automatic buy/sell</description>
     <properties>
@@ -22,24 +22,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>net.openhft.com.binance.api</groupId>
             <artifactId>binance-api-client</artifactId>

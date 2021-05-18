@@ -9,7 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class SendGridHelper {
@@ -19,19 +23,27 @@ public class SendGridHelper {
     @Autowired
     private SendGrid sendGridClient;
 
-    public void sendMail(String text) throws IOException {
+    private final String TO = "<toEmail>";
+    private final String SUBJECT = "<subject>";
+    private final String BODY = "<body>";
 
-        Request request = new Request();
-        request.setMethod(Method.POST);
-        request.setEndpoint("mail/send");
-        request.setBody(text);
-        Response response = sendGridClient.api(request);
-        logger.info("STATUS: " + response.getStatusCode());
+    public void sendMail(List<String> to, String subject, String body) {
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(Objects.requireNonNull(classLoader.getResource("sendGridTemplate/sendGridEmailBody.json")).getFile());
+            String template = null;
+            template = new String(Files.readAllBytes(file.toPath()));
 
+            Request request = new Request();
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(template.replace(TO, String.join(",", to)).replace(SUBJECT, subject).replace(BODY, body));
+            Response response = sendGridClient.api(request);
+            logger.info("mail Sended");
+            logger.info("STATUS: " + response.getStatusCode());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-//    example calling
-//            ClassLoader classLoader = getClass().getClassLoader();
-//            File file = new File(Objects.requireNonNull(classLoader.getResource("sendGridTemplate/sendGridEmailBody.json")).getFile());
-//            sendGridHelper.sendMail(new String(Files.readAllBytes(file.toPath())));
-//            logger.info("mail Sended");
+
 }

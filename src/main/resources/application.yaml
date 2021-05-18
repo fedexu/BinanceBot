@@ -37,4 +37,4 @@ binance:
 
 firestore:
   collection:
-    telegramuser: test
+    telegramuser: telegramUser

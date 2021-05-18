@@ -5,6 +5,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.util.List;
+
 @Data
 @Configuration
 @ConfigurationProperties
@@ -18,5 +20,6 @@ public class YamlSecretProperties {
     private String TELEGRAM_BOT_KEY;
     private String FIREBASE_TOKEN;
     private String FIREBASE_PROJECT_ID;
+    private List<String> EMAIL;
 
 }
