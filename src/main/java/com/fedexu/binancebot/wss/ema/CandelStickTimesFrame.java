@@ -6,6 +6,8 @@ import lombok.Data;
 
 import java.io.IOException;
 
+import static java.lang.Long.parseLong;
+
 @Data
 @Builder
 public class CandelStickTimesFrame {
@@ -30,7 +32,7 @@ public class CandelStickTimesFrame {
             case FIVE_MINUTES:
             case FIFTEEN_MINUTES:
             case HALF_HOURLY:
-                seconds = seconds * Long.parseLong(interval.getIntervalId().replace("m", ""));
+                seconds = seconds * parseLong(interval.getIntervalId().replace("m", ""));
                 break;
             case HOURLY:
             case TWO_HOURLY:
@@ -38,14 +40,14 @@ public class CandelStickTimesFrame {
             case SIX_HOURLY:
             case EIGHT_HOURLY:
             case TWELVE_HOURLY:
-                seconds = seconds * 60 * Long.parseLong(interval.getIntervalId().replace("h", ""));
+                seconds = seconds * 60 * parseLong(interval.getIntervalId().replace("h", ""));
                 break;
             case DAILY:
             case THREE_DAILY:
-                seconds = seconds * 60 * 24 * Long.parseLong(interval.getIntervalId().replace("d", ""));
+                seconds = seconds * 60 * 24 * parseLong(interval.getIntervalId().replace("d", ""));
                 break;
             case WEEKLY:
-                seconds = seconds * 60 * 24 * 7 * Long.parseLong(interval.getIntervalId().replace("w", ""));
+                seconds = seconds * 60 * 24 * 7 * parseLong(interval.getIntervalId().replace("w", ""));
                 break;
             default:
                 throw new IOException("Interval value not correct");

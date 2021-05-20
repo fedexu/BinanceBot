@@ -21,7 +21,9 @@ telegram:
       /notify [symbol] [price] [up/down] - notify the crypto value based on price. e.g. /notify DOGEBUSD 1 up
     notify: |
       Ho registrato correttamente la tua richiesta!
-      La notifica vale solo per un alert.
+      La notifica vale solo per un alert o fino ad un cambio versione.
+    price: |
+      Alert! Price of <symbol> is <direction> of <price>. Actual price is <actualPrice>
 
   commands:
     start: /start

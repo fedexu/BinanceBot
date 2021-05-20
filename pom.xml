@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.fedexu</groupId>
     <artifactId>BinanceBot</artifactId>
-    <version>0.3.2</version>
+    <version>0.4.0</version>
     <name>BinanceBot</name>
     <description>BinanceBot for automatic buy/sell</description>
     <properties>

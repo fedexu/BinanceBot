@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.fedexu.binancebot.wss.ema.EMA.*;
+import static java.lang.Double.parseDouble;
 
 @Service
 public class CandelStickObserver {
@@ -68,14 +69,14 @@ public class CandelStickObserver {
         Double mediumEma;
         Double slowEma;
 
-        out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> Double.parseDouble(value.getClose())).toArray(), EMA_7.getValueId());
+        out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> parseDouble(value.getClose())).toArray(), EMA_7.getValueId());
         fastEma = (out.length - 1 >= 0) ? out[out.length - 1] : null;
-        out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> Double.parseDouble(value.getClose())).toArray(), EMA_25.getValueId());
+        out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> parseDouble(value.getClose())).toArray(), EMA_25.getValueId());
         mediumEma = (out.length - 1 >= 0) ? out[out.length - 1] : null;
-        out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> Double.parseDouble(value.getClose())).toArray(), EMA_99.getValueId());
+        out = taLibFunction.ema(candelsHistory.stream().mapToDouble(value -> parseDouble(value.getClose())).toArray(), EMA_99.getValueId());
         slowEma = (out.length - 1 >= 0) ? out[out.length - 1] : null;
 
-        publisher.publishEvent(new EmaEvent(this, Double.parseDouble(candelsHistory.get(candelsHistory.size() - 1).getClose()), fastEma, mediumEma, slowEma));
+        publisher.publishEvent(new EmaEvent(this, parseDouble(candelsHistory.get(candelsHistory.size() - 1).getClose()), fastEma, mediumEma, slowEma));
     }
 
 

@@ -53,11 +53,10 @@ public class AnalyzeCore {
     public void doLogic() {
         MarketStatus actualMarketStatus = null;
         orderStatus = null;
-        double safePad = 0.0;
 
         if (!isNull(fastEma) && !isNull(mediumEma) && !isNull(slowEma)) {
             // pad %
-            safePad = mediumEma * safePadPerc;
+            double safePad = mediumEma * safePadPerc;
 
             if (fastEma < slowEma && mediumEma < slowEma) {
                 if (fastEma < mediumEma - safePad) {
@@ -102,9 +101,9 @@ public class AnalyzeCore {
 //                logger.info("EMA(" + EMA_99 + "): " + slowEma);
 //            }
 
-        logger.info("Safe pad is : "+ safePad +" EMA(" + EMA_7 + "): " + fastEma + " EMA(" + EMA_25 + "): " + mediumEma + " EMA(" + EMA_99 + "): " + slowEma);
+//        logger.info("Safe pad is : "+ safePad +" EMA(" + EMA_7 + "): " + fastEma + " EMA(" + EMA_25 + "): " + mediumEma + " EMA(" + EMA_99 + "): " + slowEma);
 
-        if (!isNull(actualMarketStatus) && !isNull(orderStatus)) {
+        if (!isNull(actualMarketStatus)) {
             if (marketStatus != actualMarketStatus) {
                 marketStatus = actualMarketStatus;
                 publisher.publishEvent(new OrderStatusEvent(this, buildEvent()));

@@ -23,8 +23,9 @@ public class Wallet {
     Logger logger = LoggerFactory.getLogger(Wallet.class);
 
     //for test purpose
-    private Double fiat = 100.0;
+    private Double fiat = 1000.0;
     private Double coin = 0.0;
+    private Double fee = 1.001;
 
     @Value("${binance.coin}")
     String COIN;
@@ -38,11 +39,16 @@ public class Wallet {
     @EventListener
     public void onApplicationEvent(OrderStatusEvent orderStatusEvent) {
         OrderStatusDto orderStatusDto = orderStatusEvent.getOrderStatusDto();
+        double tradeFee = 0.0;
         if (SELL == orderStatusDto.getOrderStatus() && fiat == 0) {
             fiat = coin * orderStatusDto.getPriceExcanged();
+            tradeFee = (fiat / fee ) - fiat;
+            fiat = fiat / fee;
             coin = 0.0;
         } else if (BUY == orderStatusDto.getOrderStatus() && coin == 0) {
             coin = fiat / orderStatusDto.getPriceExcanged();
+            tradeFee = (coin / fee ) - coin;
+            coin = coin / fee;
             fiat = 0.0;
         }
 
@@ -50,9 +56,9 @@ public class Wallet {
         String emaValue = "EMA(" + EMA_7.getValueId() + "): " + orderStatusDto.getFastEma() + "\n" +
                 " EMA(" + EMA_25.getValueId() + "): " + orderStatusDto.getMediumEma() + "\n" +
                 " EMA(" + EMA_99.getValueId() + "): " + orderStatusDto.getSlowEma();
-        String wallet = "Actual wallet : FIAT " + fiat + "$ | " + COIN.replace("BUSD", "") + " " + coin;
+        String wallet = "Actual wallet : FIAT " + fiat + "$ | " + COIN.replace("BUSD", "") + " " + coin + " Fee applied : " + tradeFee;
         String typeOfOrder = "Type order is : " + orderStatusDto.getOrderStatus().getValueId();
-        String message = excangedPrice + "\n" + emaValue + "\n" + typeOfOrder + "\n" +  wallet;
+        String message = excangedPrice + "\n" + emaValue + "\n" + typeOfOrder + "\n" + wallet;
 
         logger.info("SENDING TELEGRAM MESSAGE : " + message);
         telegramHelper.sendMessageToSubscribed(message);

@@ -17,7 +17,7 @@ public enum MarketStatus {
         return this.valueId;
     }
 
-    public static MarketStatus fromString(String value) {
+    public static MarketStatus from(String value) {
         for (MarketStatus status : MarketStatus.values()) {
             if (status.valueId.equalsIgnoreCase(value)) {
                 return status;
