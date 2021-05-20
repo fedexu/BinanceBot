@@ -47,11 +47,12 @@ public class Wallet {
         }
 
         String excangedPrice = "Actual Exchanged price is " + orderStatusDto.getPriceExcanged() + " $ ";
-        String emaValue = "EMA(" + EMA_7.getValueId() + "): " + orderStatusDto.getFastEma() +
-                " EMA(" + EMA_25.getValueId() + "): " + orderStatusDto.getMediumEma() +
+        String emaValue = "EMA(" + EMA_7.getValueId() + "): " + orderStatusDto.getFastEma() + "\n" +
+                " EMA(" + EMA_25.getValueId() + "): " + orderStatusDto.getMediumEma() + "\n" +
                 " EMA(" + EMA_99.getValueId() + "): " + orderStatusDto.getSlowEma();
         String wallet = "Actual wallet : FIAT " + fiat + "$ | " + COIN.replace("BUSD", "") + " " + coin;
-        String message = excangedPrice + "\n" + emaValue + "\n" + orderStatusDto.getOrderStatus().getValueId() + "\n" +  wallet;
+        String typeOfOrder = "Type order is : " + orderStatusDto.getOrderStatus().getValueId();
+        String message = excangedPrice + "\n" + emaValue + "\n" + typeOfOrder + "\n" +  wallet;
 
         logger.info("SENDING TELEGRAM MESSAGE : " + message);
         telegramHelper.sendMessageToSubscribed(message);
