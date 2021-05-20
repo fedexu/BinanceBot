@@ -1,6 +1,5 @@
 package com.fedexu.binancebot.event.commands;
 
-import com.fedexu.binancebot.event.order.OrderStatusDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;

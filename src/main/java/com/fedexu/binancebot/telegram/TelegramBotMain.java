@@ -1,7 +1,5 @@
 package com.fedexu.binancebot.telegram;
 
-import com.fedexu.binancebot.configuration.YamlSecretProperties;
-import com.fedexu.binancebot.email.SendGridHelper;
 import com.fedexu.binancebot.event.commands.TelegramCommandDto;
 import com.fedexu.binancebot.event.commands.TelegramCommandEvent;
 import com.pengrad.telegrambot.TelegramBot;
@@ -19,10 +17,9 @@ import org.springframework.stereotype.Component;
 import static java.util.Objects.isNull;
 
 @Component
-public class TelegramBotMain implements ApplicationEventPublisherAware {
+public class TelegramBotMain {
 
     Logger logger = LoggerFactory.getLogger(TelegramBotMain.class);
-    private ApplicationEventPublisher publisher;
 
     @Autowired
     private TelegramBot telegramBot;
@@ -36,11 +33,8 @@ public class TelegramBotMain implements ApplicationEventPublisherAware {
     @Value("${build.version}")
     private String buildVersion;
 
-    @SuppressWarnings("NullableProblems")
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.publisher = applicationEventPublisher;
-    }
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     //Dead man's solution
     @Scheduled(fixedDelay = Long.MAX_VALUE)

@@ -95,7 +95,7 @@ public class TelegramHelper {
         return users;
     }
 
-    public User find(long chatId){
+    public User find(long chatId) {
         User searchedUser = null;
         try {
             DocumentReference docRef = firestore.collection(usersCollection).document(String.valueOf(chatId));
@@ -110,7 +110,7 @@ public class TelegramHelper {
         return searchedUser;
     }
 
-    private User mapToUser(DocumentSnapshot document){
+    private User mapToUser(DocumentSnapshot document) {
         return User.builder()
                 .username(document.getString("username"))
                 .chatId(document.getLong("chatId"))

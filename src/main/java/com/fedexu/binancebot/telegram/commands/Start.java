@@ -8,12 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import static java.util.Objects.isNull;
 
 @Service
-public class Start implements ApplicationListener<TelegramCommandEvent> {
+public class Start {
 
     Logger logger = LoggerFactory.getLogger(Start.class);
 
@@ -26,7 +27,7 @@ public class Start implements ApplicationListener<TelegramCommandEvent> {
     @Value("${telegram.messages.welcome}")
     private String WELCOME_MESSAGE;
 
-    @Override
+    @EventListener
     public void onApplicationEvent(TelegramCommandEvent telegramCommandEvent) {
         long chatId = telegramCommandEvent.getTelegramCommandDto().getChatId();
         if (START_COMMAND.equals(telegramCommandEvent.getTelegramCommandDto().getCommand())) {

@@ -31,10 +31,15 @@ telegram:
 binance:
   cache:
     max: 300
-  pad%: 0.01
-  interval: HALF_HOURLY #ONE_MINUTE #FIFTEEN_MINUTES #HOURLY #
-  coin: ETHBUSD
+  pad%: 0.004 #0.01
+  interval: ONE_MINUTE #ONE_MINUTE #FIFTEEN_MINUTES #HOURLY #HALF_HOURLY
+  coin: ETHBUSD #BTCBUSD #SHIBBUSD
 
 firestore:
   collection:
-    telegramuser: telegramUser
+    telegramuser: test
+
+sendgrid:
+  mail:
+    template: >
+      {"personalizations":[{"to":[{"email":"<toEmail>"}],"subject":"<subject>"}],"from":{"email":"fede-xu125@live.it"},"content":[{"type":"text/plain","value":"<body>"}]}

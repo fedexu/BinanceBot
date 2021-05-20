@@ -1,4 +1,4 @@
-package com.fedexu.binancebot.wss.analyze;
+package com.fedexu.binancebot.wss.ema;
 
 public enum EMA {
 

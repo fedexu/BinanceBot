@@ -1,5 +1,6 @@
 package com.fedexu.binancebot.event.order;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;

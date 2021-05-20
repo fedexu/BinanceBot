@@ -6,29 +6,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class PriceObserver implements ApplicationEventPublisherAware {
+public class PriceObserver {
 
-    Logger logger = LoggerFactory.getLogger(com.fedexu.binancebot.wss.analyze.CandelStickObserver.class);
+    Logger logger = LoggerFactory.getLogger(PriceObserver.class);
+
+    @Autowired
     private ApplicationEventPublisher publisher;
 
     @Autowired
     BinanceApiRestClient restClient;
 
-    @SuppressWarnings("NullableProblems")
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.publisher = applicationEventPublisher;
-    }
-
     @Scheduled(cron = "*/15 * * * * *")
-    public void run(){
+    public void run() {
         List<TickerPrice> tickerPrice = restClient.getAllPrices();
 
     }

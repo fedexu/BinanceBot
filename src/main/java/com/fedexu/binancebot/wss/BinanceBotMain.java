@@ -1,11 +1,9 @@
 package com.fedexu.binancebot.wss;
 
-import com.binance.api.client.domain.market.CandlestickInterval;
-import com.fedexu.binancebot.wss.analyze.CandelStickObserver;
+import com.fedexu.binancebot.wss.ema.CandelStickObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,24 +19,18 @@ public class BinanceBotMain {
     @Autowired
     CandelStickObserver candelStickObserver;
 
-    @Value("${binance.interval}")
-    String TIME_INTERVAL;
-
-    @Value("${binance.coin}")
-    String COIN;
-
     //Dead man's solution
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void run() {
         logger.info("BinanceWebSocketReader STARTED!");
         try {
-            Closeable webSocketConnection = candelStickObserver.watchEMA(CandlestickInterval.valueOf(TIME_INTERVAL), COIN);
+            Closeable webSocketConnection = candelStickObserver.watchEMA();
             while (!exitCondition) {
                 // if the last socket time is below 1m
                 if (System.currentTimeMillis() - candelStickObserver.webSocketEventTime > 60 * 1000) {
                     webSocketConnection.close();
                     logger.info("Close the old connection. Start a new one!");
-                    webSocketConnection = candelStickObserver.watchEMA(CandlestickInterval.valueOf(TIME_INTERVAL), COIN);
+                    webSocketConnection = candelStickObserver.watchEMA();
                     TimeUnit.SECONDS.sleep(30);
                 }
                 TimeUnit.SECONDS.sleep(15);

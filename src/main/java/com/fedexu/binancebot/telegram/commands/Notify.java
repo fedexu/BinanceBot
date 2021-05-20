@@ -7,10 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
-public class Notify implements ApplicationListener<TelegramCommandEvent> {
+public class Notify {
 
     Logger logger = LoggerFactory.getLogger(Notify.class);
 
@@ -23,7 +24,7 @@ public class Notify implements ApplicationListener<TelegramCommandEvent> {
     @Autowired
     private TelegramHelper telegramHelper;
 
-    @Override
+    @EventListener
     public void onApplicationEvent(TelegramCommandEvent telegramCommandEvent) {
         long chatId = telegramCommandEvent.getTelegramCommandDto().getChatId();
         if (telegramCommandEvent.getTelegramCommandDto().getCommand().startsWith(NOTIFY_COMMAND)) {

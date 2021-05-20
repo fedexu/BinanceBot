@@ -10,5 +10,9 @@ public class OrderStatusDto {
 
     private OrderStatus orderStatus;
     private MarketStatus marketStatus;
-    private double priceExcanged;
+    public double priceExcanged;
+    public Double fastEma;
+    public Double mediumEma;
+    public Double slowEma;
+
 }
