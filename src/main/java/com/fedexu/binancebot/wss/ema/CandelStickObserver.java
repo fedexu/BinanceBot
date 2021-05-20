@@ -87,11 +87,11 @@ public class CandelStickObserver {
                 .noneMatch(candlestickEvent.getOpenTime()::equals)) {
             //remove the oldest value and update the last element with the new Candel event created
             if (candelsHistory.size() >= MAX_CACHE_HISTORY_VALUE) {
-                logger.info("REMOVING CANDEL : " + candelsHistory.get(0).toString());
+//                logger.info("REMOVING CANDEL : " + candelsHistory.get(0).toString());
                 candelsHistory.remove(0);
             }
             candelsHistory.add(toCandlestick(candlestickEvent));
-            logger.info("ADDING : " + candelsHistory.get(candelsHistory.size() - 1).toString());
+//            logger.info("ADDING : " + candelsHistory.get(candelsHistory.size() - 1).toString());
         } else {
             //update the current candel close value
             candelsHistory.stream()
