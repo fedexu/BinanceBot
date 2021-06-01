@@ -1,6 +1,6 @@
 package com.fedexu.binancebot.wss;
 
-import com.fedexu.binancebot.wss.ema.CandelStickObserver;
+import com.fedexu.binancebot.wss.ema.EmaObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +17,20 @@ public class BinanceBotMain {
     public volatile boolean exitCondition;
 
     @Autowired
-    CandelStickObserver candelStickObserver;
+    EmaObserver emaObserver;
 
     //Dead man's solution
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void run() {
         logger.info("BinanceWebSocketReader STARTED!");
         try {
-            Closeable webSocketConnection = candelStickObserver.watchEMA();
+            Closeable webSocketConnection = emaObserver.watchEMA();
             while (!exitCondition) {
                 // if the last socket time is below 1m
-                if (System.currentTimeMillis() - candelStickObserver.webSocketEventTime > 60 * 1000) {
+                if (System.currentTimeMillis() - emaObserver.webSocketEventTime > 60 * 1000) {
                     webSocketConnection.close();
                     logger.info("Close the old connection. Start a new one!");
-                    webSocketConnection = candelStickObserver.watchEMA();
+                    webSocketConnection = emaObserver.watchEMA();
                     TimeUnit.SECONDS.sleep(30);
                 }
                 TimeUnit.SECONDS.sleep(15);

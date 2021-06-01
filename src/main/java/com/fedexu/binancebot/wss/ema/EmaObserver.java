@@ -6,6 +6,8 @@ import com.binance.api.client.domain.event.CandlestickEvent;
 import com.binance.api.client.domain.market.Candlestick;
 import com.binance.api.client.domain.market.CandlestickInterval;
 import com.fedexu.binancebot.event.EmaEvent;
+import com.fedexu.binancebot.wss.macd.MacdObserver;
+import com.fedexu.binancebot.wss.rsi.RsiObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +23,10 @@ import static com.fedexu.binancebot.wss.ema.EMA.*;
 import static java.lang.Double.parseDouble;
 
 @Service
-public class CandelStickObserver {
+public class EmaObserver {
 
     public long webSocketEventTime = System.currentTimeMillis();
-    Logger logger = LoggerFactory.getLogger(CandelStickObserver.class);
+    Logger logger = LoggerFactory.getLogger(EmaObserver.class);
 
     @Autowired
     BinanceApiRestClient restClient;

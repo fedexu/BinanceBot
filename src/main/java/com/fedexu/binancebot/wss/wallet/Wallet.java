@@ -26,6 +26,7 @@ public class Wallet {
     private Double fiat = 1000.0;
     private Double coin = 0.0;
     private Double fee = 1.001;
+    private Double totalFee = 0.0;
 
     @Value("${binance.coin}")
     String COIN;
@@ -45,12 +46,15 @@ public class Wallet {
             tradeFee = (fiat / fee) - fiat;
             fiat = fiat / fee;
             coin = 0.0;
+            totalFee = tradeFee;
         } else if (BUY == orderStatusDto.getOrderStatus() && coin == 0) {
             coin = fiat / orderStatusDto.getPriceExcanged();
-            tradeFee = (coin / fee) - coin;
-            coin = coin / fee;
+            tradeFee = (fiat / fee) - fiat;
+            fiat = fiat / fee;
             fiat = 0.0;
         }
+
+        totalFee += tradeFee;
 
         String excangedPrice = "Actual Exchanged price is " + orderStatusDto.getPriceExcanged() + " $ ";
         String emaValue = "EMA(" + EMA_7.getValueId() + "): " + orderStatusDto.getFastEma() + "\n" +
@@ -59,7 +63,8 @@ public class Wallet {
         String typeOfOrder = "Type order is : " + orderStatusDto.getOrderStatus().getValueId();
         String wallet = "Actual wallet : FIAT " + fiat + "$ | " + COIN.replace("BUSD", "") + " " + coin;
         String fee = " Fee applied : " + String.format("%.12f", tradeFee);
-        String message = excangedPrice + "\n" + emaValue + "\n" + typeOfOrder + "\n" + wallet + "\n" + fee;
+        String totalFee = "Total fee payed : " + String.format("%.12f", this.totalFee);
+        String message = excangedPrice + "\n" + emaValue + "\n" + typeOfOrder + "\n" + wallet + "\n" + fee + "\n" + totalFee;
 
         logger.info("SENDING TELEGRAM MESSAGE : " + message);
         telegramHelper.sendMessageToSubscribed(message);
