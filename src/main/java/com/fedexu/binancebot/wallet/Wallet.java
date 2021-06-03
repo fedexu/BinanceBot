@@ -1,4 +1,4 @@
-package com.fedexu.binancebot.wss.wallet;
+package com.fedexu.binancebot.wallet;
 
 import com.fedexu.binancebot.email.SendGridHelper;
 import com.fedexu.binancebot.event.order.OrderStatusDto;
@@ -25,7 +25,7 @@ public class Wallet {
     //for test purpose
     private Double fiat = 1000.0;
     private Double coin = 0.0;
-    private Double fee = 1.001;
+    private final Double fee = 1.001;
     private Double totalFee = 0.0;
 
     @Value("${binance.coin}")

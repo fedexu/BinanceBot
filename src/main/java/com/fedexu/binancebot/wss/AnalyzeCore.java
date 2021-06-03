@@ -2,11 +2,13 @@ package com.fedexu.binancebot.wss;
 
 import com.binance.api.client.domain.market.CandlestickInterval;
 import com.fedexu.binancebot.event.EmaEvent;
-import com.fedexu.binancebot.event.MarketStatus;
+import com.fedexu.binancebot.event.MacdEvent;
+import com.fedexu.binancebot.event.NewCandleStickEvent;
+import com.fedexu.binancebot.event.RsiEvent;
+import com.fedexu.binancebot.event.order.MarketStatus;
 import com.fedexu.binancebot.event.order.OrderStatus;
 import com.fedexu.binancebot.event.order.OrderStatusDto;
 import com.fedexu.binancebot.event.order.OrderStatusEvent;
-import com.fedexu.binancebot.wss.ema.CandelStickTimesFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-import static com.fedexu.binancebot.wss.ema.EMA.*;
 import static java.util.Objects.isNull;
 
 @Service
@@ -35,22 +36,48 @@ public class AnalyzeCore {
     String TIME_INTERVAL;
 
     public double priceExcanged;
+    //EMA
     public Double fastEma;
     public Double mediumEma;
     public Double slowEma;
+    //MACD
+    public Double macd;
+    public Double signal;
+    public Double hist;
+    //RSI
+    public Double fastRsi;
+    public Double mediumRsi;
+    public Double slowRsi;
+
     public MarketStatus marketStatus = null;
     public OrderStatus orderStatus;
 
     @EventListener
     public void onEmaEvent(EmaEvent emaEvent) {
-        this.priceExcanged = emaEvent.priceExcanged;
-        this.fastEma = emaEvent.fastEma;
-        this.mediumEma = emaEvent.mediumEma;
-        this.slowEma = emaEvent.slowEma;
-        doLogic();
+        this.priceExcanged = emaEvent.getPriceExcanged();
+        this.fastEma = emaEvent.getFastEma();
+        this.mediumEma = emaEvent.getMediumEma();
+        this.slowEma = emaEvent.getSlowEma();
     }
 
-    public void doLogic() {
+    @EventListener
+    public void onMacdEvent(MacdEvent macdEvent) {
+        this.priceExcanged = macdEvent.getPriceExcanged();
+        this.macd = macdEvent.getMacd();
+        this.signal = macdEvent.getSignal();
+        this.hist = macdEvent.getHist();
+    }
+
+    @EventListener
+    public void onRsiEvent(RsiEvent rsiEvent) {
+        this.priceExcanged = rsiEvent.getPriceExcanged();
+        this.fastRsi = rsiEvent.getFastRsi();
+        this.mediumRsi = rsiEvent.getMediumRsi();
+        this.slowRsi = rsiEvent.getSlowRsi();
+    }
+
+    @EventListener
+    public void doLogic(NewCandleStickEvent newCandleStickEvent) {
         MarketStatus actualMarketStatus = null;
         orderStatus = null;
 
@@ -80,6 +107,7 @@ public class AnalyzeCore {
 //                    logger.info("waiting for market to adjust");
             }
 
+            logger.info("Safe pad is : "+ safePad );
         }
         //NOT AN INTEREST STATES
 //            else {
@@ -101,8 +129,6 @@ public class AnalyzeCore {
 //                logger.info("EMA(" + EMA_99 + "): " + slowEma);
 //            }
 
-//        logger.info("Safe pad is : "+ safePad +" EMA(" + EMA_7 + "): " + fastEma + " EMA(" + EMA_25 + "): " + mediumEma + " EMA(" + EMA_99 + "): " + slowEma);
-
         if (!isNull(actualMarketStatus)) {
             if (marketStatus != actualMarketStatus) {
                 marketStatus = actualMarketStatus;
@@ -113,7 +139,7 @@ public class AnalyzeCore {
 
     private double calculatePad() throws IOException {
         long seconds = CandelStickTimesFrame.secondsInTimeFrame(CandlestickInterval.valueOf(TIME_INTERVAL));
-
+        //TODO
 
         return 0.0;
     }

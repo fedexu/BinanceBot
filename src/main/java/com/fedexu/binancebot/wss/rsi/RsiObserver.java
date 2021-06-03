@@ -1,35 +1,43 @@
 package com.fedexu.binancebot.wss.rsi;
 
-import com.tictactec.ta.lib.Core;
-import com.tictactec.ta.lib.MInteger;
+import com.binance.api.client.domain.market.Candlestick;
+import com.fedexu.binancebot.event.RsiEvent;
+import com.fedexu.binancebot.wss.talib.TaLibFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.fedexu.binancebot.wss.rsi.RSI.*;
+import static java.lang.Double.parseDouble;
 
 @Service
 public class RsiObserver {
 
     Logger logger = LoggerFactory.getLogger(com.fedexu.binancebot.wss.macd.MacdObserver.class);
 
-    public static double[] rsi(double[] prices, int PERIODS_AVERAGE) {
-        Core taLibCore = new Core();
-        double[] tempOutPut = new double[prices.length];
-        double[] output = new double[prices.length];
-        MInteger begin = new MInteger();
-        MInteger length = new MInteger();
-        begin.value = -1;
-        length.value = -1;
+    @Autowired
+    TaLibFunctions taLibFunctions;
 
-        taLibCore.rsi(0, prices.length - 1, prices, PERIODS_AVERAGE, begin, length, tempOutPut);
-        for (int i = 0; i < PERIODS_AVERAGE; i++) {
-            output[i] = 0;
-        }
-        for (int i = PERIODS_AVERAGE; 0 < i && i < (prices.length); i++) {
-            output[i] = tempOutPut[i - PERIODS_AVERAGE];
-        }
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
-        System.out.println("RSI " + PERIODS_AVERAGE + " " + output[prices.length-1]);
+    public void calculateRSI(List<Candlestick> candelsHistory) {
+        double[] out;
+        Double fastRsi;
+        Double mediumRsi;
+        Double slowRsi;
 
-        return output;
+        out = taLibFunctions.rsi(candelsHistory.stream().mapToDouble(value -> parseDouble(value.getClose())).toArray(), RSI_6.getValueId());
+        fastRsi = (out.length - 1 >= 0) ? out[out.length - 1] : null;
+        out = taLibFunctions.rsi(candelsHistory.stream().mapToDouble(value -> parseDouble(value.getClose())).toArray(), RSI_12.getValueId());
+        mediumRsi = (out.length - 1 >= 0) ? out[out.length - 1] : null;
+        out = taLibFunctions.rsi(candelsHistory.stream().mapToDouble(value -> parseDouble(value.getClose())).toArray(), RSI_24.getValueId());
+        slowRsi = (out.length - 1 >= 0) ? out[out.length - 1] : null;
+
+        publisher.publishEvent(new RsiEvent(this, parseDouble(candelsHistory.get(candelsHistory.size() - 1).getClose()), fastRsi, mediumRsi, slowRsi));
     }
 }

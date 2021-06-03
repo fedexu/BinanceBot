@@ -1,37 +1,40 @@
 package com.fedexu.binancebot.wss.macd;
 
-import com.fedexu.binancebot.wss.ema.EmaObserver;
-import com.tictactec.ta.lib.Core;
-import com.tictactec.ta.lib.MAType;
-import com.tictactec.ta.lib.MInteger;
+import com.binance.api.client.domain.market.Candlestick;
+import com.fedexu.binancebot.event.MacdEvent;
+import com.fedexu.binancebot.wss.talib.MacdValues;
+import com.fedexu.binancebot.wss.talib.TaLibFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.fedexu.binancebot.wss.macd.MACD.*;
+import static java.lang.Double.parseDouble;
 
 @Service
 public class MacdObserver {
     Logger logger = LoggerFactory.getLogger(MacdObserver.class);
 
-    public static double[] macd(double[] prices, int PERIODS_AVERAGE) {
-        Core taLibCore = new Core();
-        double[] tempOutPut = new double[prices.length];
-        double[] output = new double[prices.length];
-        MInteger begin = new MInteger();
-        MInteger length = new MInteger();
-        begin.value = -1;
-        length.value = -1;
+    @Autowired
+    TaLibFunctions taLibFunctions;
 
-        int lookback;
-        double macd[]   = new double[prices.length];
-        double signal[] = new double[prices.length];
-        double hist[]   = new double[prices.length];
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
-        lookback = taLibCore.macdLookback(12,26,9);
-        taLibCore.macd(0,prices.length-1,prices,12,26,9,begin,length,macd,signal,hist);
+    public void calculateMACD(List<Candlestick> candelsHistory) {
+        double[] out;
 
-        //System.out.println("macd : "+ macd[266] + "signal : " + signal[266] + "hist : "+ hist[266]  );
-        //System.out.println(lookback);
-        return output;
+        MacdValues values =
+                taLibFunctions.macd(candelsHistory.stream().mapToDouble(value -> parseDouble(value.getClose())).toArray(),
+                        MACD_12.getValueId(), MACD_26.getValueId(), MACD_9.getValueId());
+
+        publisher.publishEvent(new MacdEvent(this,
+                parseDouble(candelsHistory.get(candelsHistory.size() - 1).getClose()),
+                values.getMacd(), values.getSignal(), values.getHist()));
     }
 
 }

@@ -9,10 +9,10 @@ import org.springframework.context.ApplicationEvent;
 @Setter
 public class EmaEvent extends ApplicationEvent {
 
-    public double priceExcanged;
-    public Double fastEma;
-    public Double mediumEma;
-    public Double slowEma;
+    private double priceExcanged;
+    private Double fastEma;
+    private Double mediumEma;
+    private Double slowEma;
 
     public EmaEvent(Object source, double priceExcanged, Double fastEma, Double mediumEma, Double slowEma) {
         super(source);

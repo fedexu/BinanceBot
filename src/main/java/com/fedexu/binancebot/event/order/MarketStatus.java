@@ -1,4 +1,4 @@
-package com.fedexu.binancebot.event;
+package com.fedexu.binancebot.event.order;
 
 public enum MarketStatus {
 
