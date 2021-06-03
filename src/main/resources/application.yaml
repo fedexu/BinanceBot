@@ -24,6 +24,19 @@ telegram:
       La notifica vale solo per un alert o fino ad un cambio versione.
     price: |
       Alert! Price of <symbol> is <direction> of <price>. Actual price is <actualPrice>
+    order: |
+      Actual Exchanged price is <PRICE> $
+            EMA(7): <FAST_EMA>
+            EMA(25): <MEDIUM_EMA>
+            EMA(99): <SLOW_EMA>
+      MACD: <MACD>
+            RSI(6): <FAST_RSI>
+            RSI(12): <MEDIUM_RSI>
+            RSI(24): <SLOW_RSI>
+            Type order is : <ORDER_TYPE>
+            Actual wallet : FIAT <FIAT>$ | <COIN>
+            Fee applied : <FEE>
+            Total fee payed : <TOTAL_FEE>
 
   commands:
     start: /start
@@ -34,7 +47,7 @@ binance:
   cache:
     max: 300
   pad%: 0.004 #0.01
-  interval: ONE_MINUTE #ONE_MINUTE #FIFTEEN_MINUTES #HOURLY #HALF_HOURLY
+  interval: FIFTEEN_MINUTES #ONE_MINUTE #FIFTEEN_MINUTES #HOURLY #HALF_HOURLY
   coin: ETHBUSD #BTCBUSD #SHIBBUSD
 
 firestore:

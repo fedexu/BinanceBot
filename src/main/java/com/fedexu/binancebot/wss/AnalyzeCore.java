@@ -107,7 +107,6 @@ public class AnalyzeCore {
 //                    logger.info("waiting for market to adjust");
             }
 
-            logger.info("Safe pad is : "+ safePad );
         }
         //NOT AN INTEREST STATES
 //            else {
@@ -146,8 +145,10 @@ public class AnalyzeCore {
 
     private OrderStatusDto buildEvent() {
         return OrderStatusDto.builder()
-                .marketStatus(marketStatus).orderStatus(orderStatus)
-                .fastEma(fastEma).slowEma(slowEma).mediumEma(mediumEma).priceExcanged(priceExcanged)
+                .marketStatus(marketStatus).orderStatus(orderStatus).priceExcanged(priceExcanged)
+                .fastEma(fastEma).slowEma(slowEma).mediumEma(mediumEma)
+                .macd(macd).signal(signal).hist(hist)
+                .fastRsi(fastRsi).mediumRsi(mediumRsi).slowRsi(slowRsi)
                 .build();
     }
 }

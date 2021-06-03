@@ -31,6 +31,9 @@ public class Wallet {
     @Value("${binance.coin}")
     String COIN;
 
+    @Value("${telegram.messages.order}")
+    private String ORDER_MESSAGE;
+
     @Autowired
     SendGridHelper sendGridHelper;
 
@@ -68,6 +71,37 @@ public class Wallet {
 
         logger.info("SENDING TELEGRAM MESSAGE : " + message);
         telegramHelper.sendMessageToSubscribed(message);
+    }
+
+    private String createMessage(OrderStatusEvent orderStatusEvent, double tradeFee) {
+        final String PRICE = "<PRICE>";
+        final String FAST_EMA = "<FAST_EMA>";
+        final String MEDIUM_EMA = "<MEDIUM_EMA>";
+        final String SLOW_EMA = "<SLOW_EMA>";
+        final String MACD = "<MACD>";
+        final String FAST_RSI = "<FAST_RSI>";
+        final String MEDIUM_RSI = "<MEDIUM_RSI>";
+        final String SLOW_RSI = "<SLOW_RSI>";
+        final String ORDER_TYPE = "<ORDER_TYPE>";
+        final String FIAT = "<FIAT>";
+        final String COIN = "<COIN>";
+        final String FEE = "<FEE>";
+        final String TOTAL_FEE = "<TOTAL_FEE>";
+        final OrderStatusDto orderStatusDto = orderStatusEvent.getOrderStatusDto();
+        return ORDER_MESSAGE
+                .replace(PRICE, String.valueOf(orderStatusDto.getPriceExcanged()))
+                .replace(FAST_EMA, String.valueOf(orderStatusDto.getFastEma()))
+                .replace(MEDIUM_EMA, String.valueOf(orderStatusDto.getMediumEma()))
+                .replace(SLOW_EMA, String.valueOf(orderStatusDto.getSlowEma()))
+                .replace(MACD, String.valueOf(orderStatusDto.getMacd()))
+                .replace(FAST_RSI, String.valueOf(orderStatusDto.getFastRsi()))
+                .replace(MEDIUM_RSI, String.valueOf(orderStatusDto.getMediumRsi()))
+                .replace(SLOW_RSI, String.valueOf(orderStatusDto.getSlowRsi()))
+                .replace(ORDER_TYPE, orderStatusDto.getOrderStatus().getValueId())
+                .replace(FIAT, String.valueOf(fiat))
+                .replace(COIN, String.valueOf(coin))
+                .replace(FEE, String.valueOf(tradeFee))
+                .replace(TOTAL_FEE, String.valueOf(totalFee));
     }
 
 }
