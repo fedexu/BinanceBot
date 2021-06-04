@@ -6,6 +6,7 @@ import com.binance.api.client.domain.event.CandlestickEvent;
 import com.binance.api.client.domain.market.Candlestick;
 import com.binance.api.client.domain.market.CandlestickInterval;
 import com.fedexu.binancebot.event.NewCandleStickEvent;
+import com.fedexu.binancebot.wallet.WalletManager;
 import com.fedexu.binancebot.wss.ema.EmaObserver;
 import com.fedexu.binancebot.wss.macd.MacdObserver;
 import com.fedexu.binancebot.wss.rsi.RsiObserver;
@@ -54,13 +55,17 @@ public class BinanceBotMain {
     @Value("${binance.interval}")
     String TIME_INTERVAL;
 
-    @Value("${binance.coin}")
-    String COIN;
+    @Value("#{'${binance.coin}'.split(',')}")
+    List<String> markets;
+
+    @Autowired
+    WalletManager walletManager;
 
     //Dead man's solution
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void run() {
         logger.info("BinanceWebSocketReader STARTED!");
+        walletManager.addWallet(markets.get(0));
         try {
             Closeable webSocketConnection = watcher();
             while (!exitCondition) {
@@ -81,9 +86,9 @@ public class BinanceBotMain {
     public Closeable watcher() throws IOException {
         CandelStickTimesFrame timesFrame = CandelStickTimesFrame.calculateCandlestickTimesFrame(CandlestickInterval.valueOf(TIME_INTERVAL), MAX_CACHE_HISTORY_VALUE);
 
-        List<Candlestick> candelsHistory = restClient.getCandlestickBars(COIN, CandlestickInterval.valueOf(TIME_INTERVAL), 500, timesFrame.getStart(), timesFrame.getEnd());
+        List<Candlestick> candelsHistory = restClient.getCandlestickBars(markets.get(0), CandlestickInterval.valueOf(TIME_INTERVAL), 500, timesFrame.getStart(), timesFrame.getEnd());
 
-        return wsClient.onCandlestickEvent(COIN.toLowerCase(), CandlestickInterval.valueOf(TIME_INTERVAL), (candlestickEvent) -> {
+        return wsClient.onCandlestickEvent(markets.get(0).toLowerCase(), CandlestickInterval.valueOf(TIME_INTERVAL), (candlestickEvent) -> {
             webSocketEventTime = candlestickEvent.getEventTime();
             candelDataFetch(candelsHistory, candlestickEvent);
             emaObserver.calculateEMA(candelsHistory);

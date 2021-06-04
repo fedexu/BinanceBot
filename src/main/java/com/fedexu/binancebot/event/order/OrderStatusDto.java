@@ -23,4 +23,6 @@ public class OrderStatusDto {
     private Double mediumRsi;
     private Double slowRsi;
 
+    private String SYMBOL;
+
 }

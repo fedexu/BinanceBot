@@ -131,7 +131,7 @@ public class AnalyzeCore {
         if (!isNull(actualMarketStatus)) {
             if (marketStatus != actualMarketStatus) {
                 marketStatus = actualMarketStatus;
-                publisher.publishEvent(new OrderStatusEvent(this, buildEvent()));
+                publisher.publishEvent(new OrderStatusEvent(this, buildEvent(newCandleStickEvent.getCandlestickEvent().getSymbol())));
             }
         }
     }
@@ -143,12 +143,13 @@ public class AnalyzeCore {
         return 0.0;
     }
 
-    private OrderStatusDto buildEvent() {
+    private OrderStatusDto buildEvent(String symbol) {
         return OrderStatusDto.builder()
                 .marketStatus(marketStatus).orderStatus(orderStatus).priceExcanged(priceExcanged)
                 .fastEma(fastEma).slowEma(slowEma).mediumEma(mediumEma)
                 .macd(macd).signal(signal).hist(hist)
                 .fastRsi(fastRsi).mediumRsi(mediumRsi).slowRsi(slowRsi)
+                .SYMBOL(symbol)
                 .build();
     }
 }
