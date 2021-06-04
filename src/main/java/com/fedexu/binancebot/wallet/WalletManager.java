@@ -97,11 +97,21 @@ public class WalletManager {
 
     public boolean addWallet(String symbol){
         if (isNull(this.wallet.get(symbol))){
-             wallet.put(symbol, new Wallet(symbol));
+            wallet.put(symbol, new Wallet(symbol));
             return true;
         }else {
             logger.error("Wallet already present");
             return false;
+        }
+    }
+
+    public boolean removeWallet(String symbol){
+        if (isNull(this.wallet.get(symbol))){
+            logger.error("Wallet not found!");
+            return false;
+        }else {
+            this.wallet.remove(symbol);
+            return true;
         }
     }
 
