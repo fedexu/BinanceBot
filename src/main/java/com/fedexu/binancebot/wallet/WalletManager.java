@@ -1,8 +1,8 @@
 package com.fedexu.binancebot.wallet;
 
 import com.fedexu.binancebot.email.SendGridHelper;
-import com.fedexu.binancebot.event.order.OrderStatusDto;
-import com.fedexu.binancebot.event.order.OrderStatusEvent;
+import com.fedexu.binancebot.wallet.order.OrderStatusDto;
+import com.fedexu.binancebot.wallet.order.OrderStatusEvent;
 import com.fedexu.binancebot.telegram.TelegramHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.fedexu.binancebot.event.order.OrderStatus.BUY;
-import static com.fedexu.binancebot.event.order.OrderStatus.SELL;
+import static com.fedexu.binancebot.wallet.order.OrderStatus.BUY;
+import static com.fedexu.binancebot.wallet.order.OrderStatus.SELL;
 import static java.util.Objects.isNull;
 
 @Service
@@ -96,12 +96,13 @@ public class WalletManager {
     }
 
     public boolean addWallet(String symbol){
-        if (isNull(this.wallet.get(symbol))){
-            wallet.put(symbol, new Wallet(symbol));
-            return true;
-        }else {
-            logger.error("Wallet already present");
+        if (isNull(symbol) || !isNull(this.wallet.get(symbol))){
+            logger.error("Wallet " + symbol + " is already present or not valid" );
             return false;
+        }else {
+            wallet.put(symbol, new Wallet(symbol));
+            telegramHelper.sendMessageToSubscribed("Wallet " + symbol + " added!");
+            return true;
         }
     }
 
@@ -111,6 +112,7 @@ public class WalletManager {
             return false;
         }else {
             this.wallet.remove(symbol);
+            telegramHelper.sendMessageToSubscribed("Wallet " + symbol + " removed!");
             return true;
         }
     }

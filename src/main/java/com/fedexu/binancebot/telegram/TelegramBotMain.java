@@ -1,7 +1,7 @@
 package com.fedexu.binancebot.telegram;
 
-import com.fedexu.binancebot.event.commands.TelegramCommandDto;
-import com.fedexu.binancebot.event.commands.TelegramCommandEvent;
+import com.fedexu.binancebot.telegram.commands.TelegramCommandDto;
+import com.fedexu.binancebot.telegram.commands.TelegramCommandEvent;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

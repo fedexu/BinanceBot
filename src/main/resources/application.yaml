@@ -18,7 +18,9 @@ telegram:
 
       /start - register you as user.
       /stop - remove you from the list and be quiet!
-      /notify [symbol] [price] [up/down] - notify the crypto value based on price. e.g. /notify DOGEBUSD 1 up
+      /notify [market] [price] [up/down] - notify the crypto value based on price. e.g. /notify DOGEBUSD 1 up
+      /runner [market] [interval] - add a bot on that market and interval
+      /list - list all active bot
     notify: |
       Ho registrato correttamente la tua richiesta!
       La notifica vale solo per un alert o fino ad un cambio versione.
@@ -38,11 +40,16 @@ telegram:
         Actual wallet : FIAT <FIAT>$ | COIN <COIN>c
         Fee applied : <FEE>$
         Total fee payed : <TOTAL_FEE>$
+    list: |
+      All current bot are :
+      <BOT>
 
   commands:
     start: /start
     stop: /stop
     notify: /notify
+    runner: /runner
+    list: /list
 
 binance:
   cache:

@@ -2,7 +2,7 @@ package com.fedexu.binancebot.wss.price;
 
 import com.binance.api.client.BinanceApiRestClient;
 import com.binance.api.client.domain.market.TickerPrice;
-import com.fedexu.binancebot.event.commands.notify.NotifyEvent;
+import com.fedexu.binancebot.telegram.commands.notify.NotifyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.fedexu.binancebot.event.commands.notify.Direction.UP;
-import static com.fedexu.binancebot.event.commands.notify.NotifyType.ADD;
-import static com.fedexu.binancebot.event.commands.notify.NotifyType.REMOVE;
+import static com.fedexu.binancebot.telegram.commands.notify.Direction.UP;
+import static com.fedexu.binancebot.telegram.commands.notify.NotifyType.ADD;
+import static com.fedexu.binancebot.telegram.commands.notify.NotifyType.REMOVE;
 import static java.lang.Double.parseDouble;
 import static java.lang.Long.parseLong;
 

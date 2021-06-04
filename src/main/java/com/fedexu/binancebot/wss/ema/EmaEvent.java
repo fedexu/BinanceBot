@@ -1,4 +1,4 @@
-package com.fedexu.binancebot.event;
+package com.fedexu.binancebot.wss.ema;
 
 import lombok.Builder;
 import lombok.Getter;

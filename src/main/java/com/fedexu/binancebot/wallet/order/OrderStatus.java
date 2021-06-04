@@ -1,12 +1,13 @@
-package com.fedexu.binancebot.event.commands.notify;
+package com.fedexu.binancebot.wallet.order;
 
-public enum Direction {
-    UP("UP"),
-    DOWN("DOWN");
+public enum OrderStatus {
+
+    SELL("SELL"),
+    BUY("BUY");
 
     private final String valueId;
 
-    Direction(String valueId) {
+    OrderStatus(String valueId) {
         this.valueId = valueId;
     }
 
@@ -14,8 +15,8 @@ public enum Direction {
         return this.valueId;
     }
 
-    public static Direction from(String value) {
-        for (Direction status : Direction.values()) {
+    public static OrderStatus from(String value) {
+        for (OrderStatus status : OrderStatus.values()) {
             if (status.valueId.equalsIgnoreCase(value)) {
                 return status;
             }

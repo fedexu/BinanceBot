@@ -1,7 +1,6 @@
-package com.fedexu.binancebot.telegram.commands;
+package com.fedexu.binancebot.telegram.commands.notify;
 
-import com.fedexu.binancebot.event.commands.TelegramCommandEvent;
-import com.fedexu.binancebot.event.commands.notify.NotifyEvent;
+import com.fedexu.binancebot.telegram.commands.TelegramCommandEvent;
 import com.fedexu.binancebot.telegram.TelegramHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +10,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import static com.fedexu.binancebot.event.commands.notify.Direction.from;
-import static com.fedexu.binancebot.event.commands.notify.NotifyType.REMOVE;
+import static com.fedexu.binancebot.telegram.commands.notify.Direction.from;
+import static com.fedexu.binancebot.telegram.commands.notify.NotifyType.REMOVE;
 import static java.lang.Long.parseLong;
 
 @Service

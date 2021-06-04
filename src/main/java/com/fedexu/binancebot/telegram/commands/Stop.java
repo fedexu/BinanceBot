@@ -1,13 +1,11 @@
 package com.fedexu.binancebot.telegram.commands;
 
-import com.fedexu.binancebot.event.commands.TelegramCommandEvent;
 import com.fedexu.binancebot.telegram.TelegramHelper;
 import com.fedexu.binancebot.telegram.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 

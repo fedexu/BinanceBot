@@ -1,10 +1,10 @@
-package com.fedexu.binancebot.event.commands.notify;
+package com.fedexu.binancebot.telegram.commands.notify;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
-import static com.fedexu.binancebot.event.commands.notify.NotifyType.ADD;
+import static com.fedexu.binancebot.telegram.commands.notify.NotifyType.ADD;
 
 @Getter
 @Setter

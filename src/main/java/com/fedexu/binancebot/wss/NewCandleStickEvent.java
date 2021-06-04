@@ -1,4 +1,4 @@
-package com.fedexu.binancebot.event;
+package com.fedexu.binancebot.wss;
 
 import com.binance.api.client.domain.event.CandlestickEvent;
 import lombok.Getter;

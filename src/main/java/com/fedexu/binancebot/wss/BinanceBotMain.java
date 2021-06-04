@@ -5,7 +5,7 @@ import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.domain.event.CandlestickEvent;
 import com.binance.api.client.domain.market.Candlestick;
 import com.binance.api.client.domain.market.CandlestickInterval;
-import com.fedexu.binancebot.event.NewCandleStickEvent;
+import com.fedexu.binancebot.configuration.runtime.BinanceBotMainRunner;
 import com.fedexu.binancebot.wallet.WalletManager;
 import com.fedexu.binancebot.wss.ema.EmaObserver;
 import com.fedexu.binancebot.wss.macd.MacdObserver;
@@ -16,14 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Component
 public class BinanceBotMain {
 
     Logger logger = LoggerFactory.getLogger(BinanceBotMain.class);
@@ -52,20 +50,24 @@ public class BinanceBotMain {
     @Value("${binance.cache.max}")
     int MAX_CACHE_HISTORY_VALUE;
 
-    @Value("${binance.interval}")
-    String TIME_INTERVAL;
-
-    @Value("#{'${binance.coin}'.split(',')}")
-    List<String> markets;
+    public CandlestickInterval TIME_INTERVAL;
+    public String market;
 
     @Autowired
     WalletManager walletManager;
 
+    @Autowired
+    BinanceBotMainRunner binanceBotMainRunner;
+
     //Dead man's solution
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void run() {
+        if (!walletManager.addWallet(market)){
+            destory();
+            return ;
+        }
+
         logger.info("BinanceWebSocketReader STARTED!");
-        walletManager.addWallet(markets.get(0));
         try {
             Closeable webSocketConnection = watcher();
             while (!exitCondition) {
@@ -80,15 +82,16 @@ public class BinanceBotMain {
             }
         } catch (Exception e) {
             logger.error("exception occurs in WSS Thread : ", e);
+            destory();
         }
     }
 
     public Closeable watcher() throws IOException {
-        CandelStickTimesFrame timesFrame = CandelStickTimesFrame.calculateCandlestickTimesFrame(CandlestickInterval.valueOf(TIME_INTERVAL), MAX_CACHE_HISTORY_VALUE);
+        CandelStickTimesFrame timesFrame = CandelStickTimesFrame.calculateCandlestickTimesFrame(TIME_INTERVAL, MAX_CACHE_HISTORY_VALUE);
 
-        List<Candlestick> candelsHistory = restClient.getCandlestickBars(markets.get(0), CandlestickInterval.valueOf(TIME_INTERVAL), 500, timesFrame.getStart(), timesFrame.getEnd());
+        List<Candlestick> candelsHistory = restClient.getCandlestickBars(market, TIME_INTERVAL, 500, timesFrame.getStart(), timesFrame.getEnd());
 
-        return wsClient.onCandlestickEvent(markets.get(0).toLowerCase(), CandlestickInterval.valueOf(TIME_INTERVAL), (candlestickEvent) -> {
+        return wsClient.onCandlestickEvent(market.toLowerCase(), TIME_INTERVAL, (candlestickEvent) -> {
             webSocketEventTime = candlestickEvent.getEventTime();
             candelDataFetch(candelsHistory, candlestickEvent);
             emaObserver.calculateEMA(candelsHistory);
@@ -96,7 +99,6 @@ public class BinanceBotMain {
             rsiObserver.calculateRSI(candelsHistory);
         });
     }
-
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void candelDataFetch(List<Candlestick> candelsHistory, CandlestickEvent candlestickEvent) {
@@ -119,7 +121,6 @@ public class BinanceBotMain {
         }
     }
 
-
     private Candlestick toCandlestick(CandlestickEvent event) {
         Candlestick candlestick = new Candlestick();
         candlestick.setOpenTime(event.getOpenTime());
@@ -136,6 +137,9 @@ public class BinanceBotMain {
         return candlestick;
     }
 
+    private void destory(){
+        binanceBotMainRunner.removeBean(market + "_" + TIME_INTERVAL);
+    }
 
 }
 

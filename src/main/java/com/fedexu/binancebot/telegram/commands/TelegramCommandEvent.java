@@ -1,4 +1,4 @@
-package com.fedexu.binancebot.event.commands;
+package com.fedexu.binancebot.telegram.commands;
 
 import lombok.Getter;
 import lombok.Setter;

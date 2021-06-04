@@ -1,12 +1,12 @@
-package com.fedexu.binancebot.event.commands.notify;
+package com.fedexu.binancebot.telegram.commands.notify;
 
-public enum NotifyType {
-    ADD("ADD"),
-    REMOVE("REMOVE");
+public enum Direction {
+    UP("UP"),
+    DOWN("DOWN");
 
     private final String valueId;
 
-    NotifyType(String valueId) {
+    Direction(String valueId) {
         this.valueId = valueId;
     }
 
@@ -14,8 +14,8 @@ public enum NotifyType {
         return this.valueId;
     }
 
-    public static NotifyType from(String value) {
-        for (NotifyType status : NotifyType.values()) {
+    public static Direction from(String value) {
+        for (Direction status : Direction.values()) {
             if (status.valueId.equalsIgnoreCase(value)) {
                 return status;
             }

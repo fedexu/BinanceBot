@@ -1,7 +1,6 @@
 package com.fedexu.binancebot.wss.macd;
 
 import com.binance.api.client.domain.market.Candlestick;
-import com.fedexu.binancebot.event.MacdEvent;
 import com.fedexu.binancebot.wss.talib.MacdValues;
 import com.fedexu.binancebot.wss.talib.TaLibFunctions;
 import org.slf4j.Logger;

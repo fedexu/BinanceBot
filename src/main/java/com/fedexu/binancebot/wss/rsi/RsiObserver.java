@@ -1,7 +1,6 @@
 package com.fedexu.binancebot.wss.rsi;
 
 import com.binance.api.client.domain.market.Candlestick;
-import com.fedexu.binancebot.event.RsiEvent;
 import com.fedexu.binancebot.wss.talib.TaLibFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
