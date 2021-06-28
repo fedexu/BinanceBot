@@ -1,7 +1,7 @@
 <p align="center">
-  <a target="_blank"><img src="https://spring.io/images/projects/spring-edf462fec682b9d48cf628eaf9e19521.svg" width="120" alt="Spring Logo" /></a>
-  <a target="_blank"><img src="https://user-images.githubusercontent.com/22296699/123639271-4e59e780-d820-11eb-8f40-5bff71c494d8.png" width="120" alt="Telegram Logo" /></a>
-  <a target="_blank"><img src="https://user-images.githubusercontent.com/22296699/123639394-6af61f80-d820-11eb-8f25-3555a2271762.png" width="120" alt="Binance Logo" /></a>
+  <a target="_blank"><img src="https://spring.io/images/projects/spring-edf462fec682b9d48cf628eaf9e19521.svg" width="100" alt="Spring Logo" /></a>
+  <a target="_blank"><img src="https://user-images.githubusercontent.com/22296699/123639271-4e59e780-d820-11eb-8f40-5bff71c494d8.png" width="130" alt="Telegram Logo" /></a>
+  <a target="_blank"><img src="https://user-images.githubusercontent.com/22296699/123639394-6af61f80-d820-11eb-8f25-3555a2271762.png" width="100" alt="Binance Logo" /></a>
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/fedexu/love-article/blob/master/LICENSE)
