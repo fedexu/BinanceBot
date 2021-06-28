@@ -4,7 +4,7 @@
   <a target="_blank"><img src="https://user-images.githubusercontent.com/22296699/123639394-6af61f80-d820-11eb-8f25-3555a2271762.png" width="100" alt="Binance Logo" /></a>
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/fedexu/love-article/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/fedexu/BinanceBot/blob/master/LICENSE)
 [![sonar qube](https://sonarcloud.io/api/project_badges/measure?project=fedexu_BinanceBot&metric=alert_status)](https://sonarcloud.io/dashboard?id=fedexu_BinanceBot)
 
 # BinanceBot
