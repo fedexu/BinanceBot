@@ -25,7 +25,7 @@ public class CandelStickTimesFrame {
     }
 
     public static long secondsInTimeFrame(CandlestickInterval interval) throws IOException {
-        long seconds = 60 * 1000;
+        long seconds = 60L * 1000L;
         switch (interval) {
             case ONE_MINUTE:
             case THREE_MINUTES:

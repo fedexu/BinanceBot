@@ -10,11 +10,15 @@
     </parent>
     <groupId>com.fedexu</groupId>
     <artifactId>BinanceBot</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
     <name>BinanceBot</name>
     <description>BinanceBot for automatic buy/sell</description>
     <properties>
         <java.version>11</java.version>
+        <sonar.projectKey>fedexu_BinanceBot</sonar.projectKey>
+        <sonar.organization>fedexu</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.coverage.jacoco.xmlReportPaths>../app-it/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
@@ -79,6 +83,25 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

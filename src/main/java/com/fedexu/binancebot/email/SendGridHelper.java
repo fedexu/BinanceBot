@@ -37,7 +37,7 @@ public class SendGridHelper {
             Response response = sendGridClient.api(request);
             logger.info("Mail sent, STATUS: " + response.getStatusCode());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("error in SendGrid Helper" , e);
         }
     }
 

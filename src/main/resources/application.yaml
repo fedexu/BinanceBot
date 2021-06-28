@@ -60,7 +60,7 @@ binance:
 
 firestore:
   collection:
-    telegramuser: telegramUser
+    telegramuser: test
 
 sendgrid:
   mail:

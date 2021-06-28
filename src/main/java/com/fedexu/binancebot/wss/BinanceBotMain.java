@@ -10,6 +10,7 @@ import com.fedexu.binancebot.wallet.WalletManager;
 import com.fedexu.binancebot.wss.ema.EmaObserver;
 import com.fedexu.binancebot.wss.macd.MacdObserver;
 import com.fedexu.binancebot.wss.rsi.RsiObserver;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +61,12 @@ public class BinanceBotMain {
     BinanceBotMainRunner binanceBotMainRunner;
 
     //Dead man's solution
+    @SneakyThrows
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void run() {
-        if (!walletManager.addWallet(market)){
+        if (!walletManager.addWallet(market)) {
             destory();
-            return ;
+            return;
         }
 
         logger.info("BinanceWebSocketReader STARTED!");
@@ -80,9 +82,13 @@ public class BinanceBotMain {
                 }
                 TimeUnit.SECONDS.sleep(15);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.error("exception occurs in WSS Thread : ", e);
             destory();
+        } catch (InterruptedException e) {
+            logger.error("exception occurs in WSS Thread : ", e);
+            destory();
+            throw e;
         }
     }
 
@@ -100,7 +106,6 @@ public class BinanceBotMain {
         });
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void candelDataFetch(List<Candlestick> candelsHistory, CandlestickEvent candlestickEvent) {
         //search if new Candel Time is occur
         if (candelsHistory.stream().map(Candlestick::getOpenTime)
@@ -117,7 +122,8 @@ public class BinanceBotMain {
             //update the current candel close value
             candelsHistory.stream()
                     .filter(candelValue -> candelValue.getOpenTime().equals(candlestickEvent.getOpenTime()))
-                    .findFirst().get().setClose(candlestickEvent.getClose());
+                    .findFirst()
+                    .ifPresent(candlestick -> candlestick.setClose(candlestickEvent.getClose()));
         }
     }
 
@@ -137,7 +143,7 @@ public class BinanceBotMain {
         return candlestick;
     }
 
-    private void destory(){
+    private void destory() {
         binanceBotMainRunner.removeBean(market + "_" + TIME_INTERVAL);
     }
 

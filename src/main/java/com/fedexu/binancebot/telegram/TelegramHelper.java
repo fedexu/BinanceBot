@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class TelegramHelper {
                     try {
                         telegramBot.execute(new SendMessage(user.getChatId(), message));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error("error in Telegram Helper" , e);
                     }
                 });
     }
@@ -44,8 +45,9 @@ public class TelegramHelper {
         telegramBot.execute(new SendMessage(chatId, message));
     }
 
+    @SneakyThrows
     public User save(User user) {
-        User addedUser = null;
+        User addedUser;
         try {
             //ADD new User to the list
             DocumentReference docRef =
@@ -57,12 +59,14 @@ public class TelegramHelper {
             addedUser = user;
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error Firestore SAVE: " + e);
+            throw e;
         }
         return addedUser;
     }
 
+    @SneakyThrows
     public boolean remove(long chatId) {
-        boolean removed = false;
+        boolean removed;
         try {
             //Remove user to the list
             ApiFuture<WriteResult> writeResult =
@@ -72,12 +76,14 @@ public class TelegramHelper {
             removed = true;
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error Firestore DELETE: " + e);
+            throw e;
         }
         return removed;
     }
 
+    @SneakyThrows
     public Map<Long, User> getAllUser() {
-        Map<Long, User> users = null;
+        Map<Long, User> users;
         try {
             // asynchronously retrieve all users
             ApiFuture<QuerySnapshot> query = firestore.collection(usersCollection).get();
@@ -91,10 +97,12 @@ public class TelegramHelper {
                     ));
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error Firestore GET ALL: " + e);
+            throw e;
         }
         return users;
     }
 
+    @SneakyThrows
     public User find(long chatId) {
         User searchedUser = null;
         try {
@@ -106,6 +114,7 @@ public class TelegramHelper {
             }
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error Firestore GET: " + e);
+            throw e;
         }
         return searchedUser;
     }
